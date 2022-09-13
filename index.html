@@ -1,80 +1,117 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Doto</title>
-    <style>
-      body {
-        margin: 0;
-        font-family: Trebuchet MS;
-        background: rgb(63, 64, 76);
-        color: white;
-      }
-      #holder {
-        margin: 4rem;
-        padding: 2rem;
-        border: 0.4rem solid black;
-        overflow: auto;
-        height: 40rem;
-        background: rgb(43, 44, 56);
-        background: rgba(43, 44, 56, 0.5);
-      }
-      #taskManager {
-        padding: 0 0.4rem;
-        margin-top: 0.8rem;
-        border: 0.4rem solid black;
-        overflow: auto;
-        height: 75%;
-        background: rgb(150, 150, 150);
-        background: rgba(150, 150, 150, 0.2);
-      }
-      #_taskInput {
-        width: 40rem;
-        height: 1rem;
-      }
-      button {
-        border: none;
-      }
-      a {
-        /*color: rgb(160, 185, 198);*/
-        color: rgb(66, 242, 247);
-      }
-      .pain {
-        padding: 0.4rem;
-        margin-bottom: -0.2rem;
-        border: 0.2rem solid black;
-        animation-name: shwoosh;
-        animation-duration: 1s;
-      }
-      @keyframes shwoosh {
-        from {opacity: 0;}
-        to {opacity: 100%;}
-      }
-    </style>
+  <meta charset="UTF-8">
+  <title>Doto</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Trebuchet MS;
+      background: rgb(63, 64, 76);
+      color: white;
+    }
+    /*remember to style this*/
+    button {
+      border: none;
+    }
+    a {
+      color: rgb(66, 242, 247);
+    }
+    #task-manager-holder {
+      margin: 4rem;
+      padding: 2rem;
+      border: 0.4rem solid black;
+      overflow: auto;
+      height: 40rem;
+      background: rgb(43, 44, 56);
+      background: rgba(43, 44, 56, 0.5);
+    }
+    #taskManager {
+      padding: 0 0.4rem;
+      margin-top: 0.8rem;
+      border: 0.4rem solid black;
+      overflow: auto;
+      height: 75%;
+      background: rgb(150, 150, 150);
+      background: rgba(150, 150, 150, 0.2);
+    }
+    #_taskInput {
+      width: 40rem;
+      height: 1rem;
+      resize: vertical;
+    }
+    #tips-menu-container {
+      background: rgba(0, 0, 0, 0.5);
+      display: none;
+    }
+    #tips-menu {
+      padding: 6rem 4rem;
+      border: 0.4rem solid black;
+      background: rgb(43, 44, 56);
+    }
+    .task-item {
+      padding: 0.4rem;
+      margin-bottom: -0.2rem;
+      border: 0.2rem solid black;
+      animation-name: shwoosh;
+      animation-duration: 1s;
+    }
+    .fullscreen-div {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      display: flex;
+      /* for horizontal */
+      justify-content: center;
+      /* for vertical */
+      align-items: center;
+    }
+    .overlay-fullscreen-div {
+      position: fixed;
+      overflow: auto;
+      display: flex;
+      top: 0; right: 0; bottom: 0; left: 0;
+      justify-content: center;
+      align-items: center;
+      user-select: none;
+    }
+    @keyframes shwoosh {
+      from {opacity: 0;}
+      to {opacity: 100%;}
+    }
+  </style>
 </head>
-<body onload="init('_taskInput', '_taskOutput', 'pain')">
-  <div id="holder">
-    <h1>Doto</h1>
-    <!--<input type="text" name="_taskInput" id="_taskInput" style="resize: both"-->
-    <!--    value="" placeholder="Write your task here"/>-->
-    
-    <textarea id="_taskInput" style="resize: both" placeholder="Write your task here"></textarea>
-    
-    <br>
-    <button onclick="submitTask()">Submit</button>
-    <button onclick="clearTasks()">Clear</button>
+<body onload="init('_taskInput', '_taskOutput', 'task-item')">
+  <div class="fullscreen-div">
+    <div id="task-manager-holder">
+      <h1>Doto</h1>
+      <textarea id="_taskInput" oninput="autoResize('_taskInput')"
+        placeholder="Write your task here"></textarea>
+      <br>
+      <button onclick="submitTask()">Submit</button>
+      <button onclick="clearTasks()">Clear</button>
+      <button onclick="toggleMenu('tips-menu-container')">Tips</button>
       
-    <div id="taskManager">
-      <p id="_taskOutput"></p>
+      <div id="taskManager">
+        <p id="_taskOutput"></p>
+      </div>
+      
     </div>
   </div>
-  <!--<p><a href="https://app.schoology.com/assignment/6266855047/info" target="_blank">Dress Code (overdue)</a></p>-->
-  <!--<p><a href="https://app.schoology.com/assignment/6048005738/info" target="_blank">Government (overdue)</a></p>-->
-  <!--<p>Electric vs. Gas</p>-->
-  <!--<p>Look for healthy recipes for the family</p>-->
-  <!--<p>Watch your eating habits</p>-->
-  <!--<p>Try to find other things to distract yourself with</p>-->
-  <!--<p style="color: red">Make this site look professional lol</p>-->
+  
+  <div id="tips-menu-container" class="overlay-fullscreen-div">
+    <div id="tips-menu">
+      <h2>Tips</h2>
+      <p>
+        Use <span>!( <em>link</em>, <em>text(optional)</em></span> ) <br>
+        Example: !(avoradev.github.io/doto, Welcome to Doto!) ->
+        <a href="https://avoradev.github.io/doto" target="_blank">Welcome to Doto!</a>
+        <br>
+        <button onclick="toggleMenu('tips-menu-container')">Back</button>
+      </p>
+    </div>
+  </div>
+  
   <script>
     const tasks = [];
     const strSpace = ' $A$ '
@@ -99,11 +136,12 @@
         return;
       }
     }
-    // todo - ban use of ' <br> ' in a submission
-    // todo - find way to easily add links
+    // todo - ban use of strSpace in a submission
     // todo - add an ability to make multiple lists
-    // todo - add more flexibility to the text editor
-    // not important to this project, but to find word count, use 'string'.match(/\w+/g).length
+    // todo - add more flexibility to the text editor (bold, italics, underline)
+    // todo - see if it's possible to skip using regex when there is no link
+    // todo - fix bug with submiting task with enter
+    // todo - fix bug with toggleMenu, it takes two clicks to use
     function submitTask(submission = defaultInput, css = defaultCss, display = defaultDisplay) {
       // get input
       let input = document.querySelector(`#${submission}`);
@@ -133,6 +171,7 @@
       if (links !== null) {
         links.forEach(item => {
           let temp = item.match(/([/.\-\w\d]+),?\s?([\w\d\s]*)/i);
+          if (temp[2] === '') {temp[2] = temp[1];}
           newSubmission = newSubmission.replace(
             item, `<a href="https://${temp[1]}" target="_blank">${temp[2]}</a>`
           );
@@ -164,6 +203,20 @@
       
       // clear display
       document.getElementById(display).innerHTML = '';
+    }
+    function toggleMenu(menuId) {
+      let elem = document.querySelector(`#${menuId}`);
+      
+      if (elem.style.display === 'none') {
+        elem.style.display = 'flex'
+      } else {
+        elem.style.display = 'none'
+      }
+    }
+    function autoResize(id) {
+      let elem = document.querySelector(`#${id}`);
+      elem.style.height = ''
+      elem.style.height = elem.scrollHeight + 'px';
     }
     document.addEventListener('keydown', e => {
       if (e.code === 'Enter') {
