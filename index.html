@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Doto</title>
+    <style>
+      body {
+        margin: 0;
+        font-family: Trebuchet MS;
+        background: rgb(63, 64, 76);
+        color: white;
+      }
+      #holder {
+        margin: 4rem;
+        padding: 2rem;
+        border: 0.4rem solid black;
+        overflow: auto;
+        height: 40rem;
+        background: rgb(43, 44, 56);
+        background: rgba(43, 44, 56, 0.5);
+      }
+      #taskManager {
+        padding: 0 0.4rem;
+        margin-top: 0.8rem;
+        border: 0.4rem solid black;
+        overflow: auto;
+        height: 75%;
+        background: rgb(150, 150, 150);
+        background: rgba(150, 150, 150, 0.2);
+      }
+      #_taskInput {
+        width: 40rem;
+        height: 1rem;
+      }
+      button {
+        border: none;
+      }
+      a {
+        /*color: rgb(160, 185, 198);*/
+        color: rgb(66, 242, 247);
+      }
+      .pain {
+        padding: 0.4rem;
+        margin-bottom: -0.2rem;
+        border: 0.2rem solid black;
+        animation-name: shwoosh;
+        animation-duration: 1s;
+      }
+      @keyframes shwoosh {
+        from {opacity: 0;}
+        to {opacity: 100%;}
+      }
+    </style>
+</head>
+<body onload="init('_taskInput', '_taskOutput', 'pain')">
+  <div id="holder">
+    <h1>Doto</h1>
+    <!--<input type="text" name="_taskInput" id="_taskInput" style="resize: both"-->
+    <!--    value="" placeholder="Write your task here"/>-->
+    
+    <textarea id="_taskInput" style="resize: both" placeholder="Write your task here"></textarea>
+    
+    <br>
+    <button onclick="submitTask()">Submit</button>
+    <button onclick="clearTasks()">Clear</button>
+      
+    <div id="taskManager">
+      <p id="_taskOutput"></p>
+    </div>
+  </div>
+  <!--<p><a href="https://app.schoology.com/assignment/6266855047/info" target="_blank">Dress Code (overdue)</a></p>-->
+  <!--<p><a href="https://app.schoology.com/assignment/6048005738/info" target="_blank">Government (overdue)</a></p>-->
+  <!--<p>Electric vs. Gas</p>-->
+  <!--<p>Look for healthy recipes for the family</p>-->
+  <!--<p>Watch your eating habits</p>-->
+  <!--<p>Try to find other things to distract yourself with</p>-->
+  <!--<p style="color: red">Make this site look professional lol</p>-->
+  <script>
+    const tasks = [];
+    const strSpace = ' $A$ '
+    let defaultInput = ''
+    let defaultDisplay = ''
+    let defaultCss = ''
+    
+    function init(input, display, css) {
+      // set defaults
+      defaultInput = input
+      defaultDisplay = display;
+      defaultCss = css;
+      
+      // display saved tasks if there are any
+      if (localStorage.getItem('tasks') !== '') {
+        localStorage.getItem('tasks').split(strSpace).forEach(item => {
+          tasks.push(item);
+          displayTask(item, css, display)
+        });
+      } else {
+        clearTasks();
+        return;
+      }
+    }
+    // todo - ban use of ' <br> ' in a submission
+    // todo - find way to easily add links
+    // todo - add an ability to make multiple lists
+    // todo - add more flexibility to the text editor
+    // not important to this project, but to find word count, use 'string'.match(/\w+/g).length
+    function submitTask(submission = defaultInput, css = defaultCss, display = defaultDisplay) {
+      // get input
+      let input = document.querySelector(`#${submission}`);
+      if (input.value === '') { return; }
+      
+      // save input
+      tasks.push(input.value);
+      localStorage.setItem('tasks', tasks.join(strSpace));
+      
+      // display to output and clear input
+      displayTask(input.value, css, display);
+      input.value = '';
+    }
+    function displayTask(submission, css, display) {
+      // get output
+      let output = document.querySelector(`#${display}`);
+      
+      // create new elements
+      let div = document.createElement('div');
+      let p = document.createElement('p');
+      let removeBtn = document.createElement('button');
+      
+      // parse submission for links
+      // currently group 2 can't use special characters
+      let newSubmission = submission;
+      let links = submission.match(/!\(([/.\-\w\d]*),?\s?([\w\d\s]*)\)/gi);
+      if (links !== null) {
+        links.forEach(item => {
+          let temp = item.match(/([/.\-\w\d]+),?\s?([\w\d\s]*)/i);
+          newSubmission = newSubmission.replace(
+            item, `<a href="https://${temp[1]}" target="_blank">${temp[2]}</a>`
+          );
+        });
+      }
+      
+      // set up new elements
+      div.id = tasks.length;
+      div.classList.add(css);
+      p.innerHTML = newSubmission;
+      removeBtn.innerHTML = 'Complete';
+      removeBtn.onclick = function() {
+        tasks.splice(tasks.indexOf(submission), 1);
+        localStorage.setItem('tasks', tasks.join(strSpace));
+        document.getElementById(div.id).remove();
+      }
+      
+      // append elements
+      div.appendChild(p);
+      div.appendChild(removeBtn);
+      // output.appendChild(div);
+      output.prepend(div);
+      
+    }
+    function clearTasks(display = defaultDisplay) {
+      // clear localStorage and tasks array
+      localStorage.clear();
+      tasks.length = 0;
+      
+      // clear display
+      document.getElementById(display).innerHTML = '';
+    }
+    document.addEventListener('keydown', e => {
+      if (e.code === 'Enter') {
+        submitTask();
+      } else if (e.code === 'ControlRight') {
+        document.getElementById(defaultInput).focus();
+      }
+    });
+  </script>
+</body>
+</html>
