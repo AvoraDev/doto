@@ -17,6 +17,15 @@
     a {
       color: rgb(66, 242, 247);
     }
+    #title a {
+      text-decoration: none;
+      transition: color 0.5s;
+      margin-left: 0.4rem;
+    }
+    #title a:hover {
+      color: red;
+      
+    }
     #task-manager-holder {
       margin: 4rem;
       padding: 2rem;
@@ -84,7 +93,11 @@
 <body onload="init('_taskInput', '_taskOutput', 'task-item')">
   <div class="fullscreen-div">
     <div id="task-manager-holder">
-      <h1>Doto</h1>
+      <div id="title">
+        <h1 style="display: inline-block">Doto</h1>
+        <a href="https://github.com/AvoraDev/doto" target="_blank">Source Code</a>
+      </div>
+      
       <textarea id="_taskInput" oninput="autoResize('_taskInput')"
         placeholder="Write your task here"></textarea>
       <br>
@@ -106,7 +119,7 @@
         Use <span>!( <em>link</em>, <em>text(optional)</em></span> ) <br>
         Example: !(avoradev.github.io/doto, Welcome to Doto!) ->
         <a href="https://avoradev.github.io/doto" target="_blank">Welcome to Doto!</a>
-        <br>
+        <br> <br>
         <button onclick="toggleMenu('tips-menu-container')">Back</button>
       </p>
     </div>
