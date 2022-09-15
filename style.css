@@ -1,0 +1,99 @@
+body {
+  margin: 0;
+  font-family: Trebuchet MS;
+  background: rgb(63, 64, 76);
+  color: white;
+  /*display: none;*/
+}
+/*remember to style this*/
+button {
+  border: none;
+}
+a {
+  color: rgb(66, 242, 247);
+}
+#title a {
+  text-decoration: none;
+  margin-left: 0.4rem;
+  color: red;
+  animation: rainbow 1.5s infinite ease-in-out;
+}
+#title a:hover {
+  animation-play-state: paused;
+}
+
+#task-manager-holder {
+  margin: 4rem;
+  padding: 2rem;
+  border: 0.4rem solid black;
+  overflow: auto;
+  height: 40rem;
+  width: 90rem;
+  background: rgb(43, 44, 56);
+  background: rgba(43, 44, 56, 0.5);
+}
+#taskManager {
+  padding: 0 0.4rem;
+  margin-top: 0.8rem;
+  border: 0.4rem solid black;
+  overflow: auto;
+  height: 75%;
+  background: rgb(150, 150, 150);
+  background: rgba(150, 150, 150, 0.2);
+}
+#_taskInput {
+  width: 100%;
+  box-sizing: border-box;
+  height: 1.5rem;
+  resize: vertical;
+}
+#tips-menu-container {
+  background: rgb(0, 0, 0);
+  background: rgba(0, 0, 0, 0.5);
+  display: none;
+}
+#tips-menu {
+  padding: 6rem 4rem;
+  border: 0.4rem solid black;
+  background: rgb(43, 44, 56);
+}
+.task-item {
+  padding: 0.4rem;
+  margin-bottom: -0.2rem;
+  border: 0.2rem solid black;
+  animation-name: shwoosh;
+  animation-duration: 1s;
+  word-break: break-word;
+}
+.fullscreen-div {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  display: flex;
+  /* for horizontal */
+  justify-content: center;
+  /* for vertical */
+  align-items: center;
+}
+.overlay-fullscreen-div {
+  position: fixed;
+  overflow: auto;
+  display: flex;
+  top: 0; right: 0; bottom: 0; left: 0;
+  justify-content: center;
+  align-items: center;
+  user-select: none;
+}
+@keyframes shwoosh {
+  from  {opacity: 0;}
+  to    {opacity: 1;}
+}
+@keyframes rainbow {
+  0%    {color: rgb(255, 0, 0);}
+  16%   {color: rgb(240, 95, 35);}
+  32%   {color: rgb(255, 255, 0);}
+  48%   {color: rgb(0, 255, 0);}
+  64%   {color: rgb(0, 100, 255);}
+  80%   {color: rgb(170, 0, 255);}
+  96%   {color: rgb(255, 0, 0);}
+}
